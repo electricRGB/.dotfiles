@@ -1,0 +1,93 @@
+#+TITLE: SpaceMacx
+#+AUTHOR: electricRGB
+
+I've been an avid user of Spacemacs for a few years. However, despite really liking the ideas that it has, there's always been two big problems. First, every so often, functionality change would be introduced and a keybinding or something I relied upon would disappear. Second, living off `master` branch means being perpetially behind and living off `develop` means constantly having things break and then I'd have to fix them. So I decided to roll my sleeves up and dive into learning Emacs proper. This configuration file is the result of that work.
+
+Because I like how Spacemacs has approached a lot of things, I've leaned into three of the four core pillars of its design philosophy. As such, I've named it SpaceMacx. In other words, SpaceMacx is:
+- Mnemonic
+- Discoverable
+- Consistent
+
+Note: This config is a work is progress. Use at your own risk.
+
+* Table of Contents
+:PROPERTIES:
+:TOC:   :include all :ignore this
+:END
+
+* Installing Emacs
+
+#+begin_src emacs-lisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+#+end_src
+
+* Defaults
+
+We should probably have some better defaults for both cleanliness, but also better management of files, and such.
+
+** Emacs defaults
+
+First, we'll keep all backup and auto-save files in one directory
+#+begin_src emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+end_src
+
+** macOS defaults
+
+* Basic UI Configuration
+
+** Load a default theme
+#+begin_src emacs-lisp
+(load-theme 'misterioso)
+#+end_src
+
+** Set fonts
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist
+  (cond
+  ((string-equal system-type "darwin")    '(font . "Fira Code-16"))
+  ((string-equal system-type "gnu/linux") '(font . "Fira Code-16"))))
+#+end_src
+
+** Easy theme switching
+#+begin_src emacs-lisp
+(defun switch-theme (theme)
+  "Disables any currently active themes and loads THEME."
+  ;; This interactive call is taken from `load-theme'
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapc 'symbol-name
+                                   (custom-available-themes))))))
+  (let ((enabled-themes custom-enabled-themes))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)))
+
+(defun disable-active-themes ()
+  "Disables any currently active themes listed in `custom-enabled-themes'."
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes))
+#+end_src
+
+* Editing Text
+
+** eVIL
+
+I'm used to Vim editing and keybindings. As such, these are going to be a key aspect of SpaceMacx.
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+* Org
+
+** Org Structure
+
+#+begin_src emacs-lisp
+;; This is needed as of Org 9.2
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+#+end_src

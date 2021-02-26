@@ -1,2 +1,11 @@
 .DS_Store
 
+# Emacs folders
+.emacs.d/elpa
+.emacs.d/auto-save-list
+
+# Generated .el files
+custom.el
+SpaceMacx.el
+
+
